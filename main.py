@@ -1,5 +1,7 @@
 from mcp.server.fastmcp import FastMCP
 from pydantic import Field
+from starlette.requests import Request
+from starlette.responses import JSONResponse
 
 import gmail_service
 import docs_service
@@ -68,6 +70,12 @@ def create_document(title: str, initial_content: str = "") -> dict:
     # FastMCP uses Pydantic under the hood for type hints. We provide a default string.
     content = initial_content if initial_content else None
     return docs_service.create_document(title, content)
+
+# --- Health Check ---
+
+@mcp.custom_route("/health", methods=["GET"])
+async def health_check(request: Request):
+    return JSONResponse({"status": "ok"})
 
 if __name__ == "__main__":
     if "RAILWAY_ENVIRONMENT" in os.environ or os.environ.get("TRANSPORT") == "sse":
