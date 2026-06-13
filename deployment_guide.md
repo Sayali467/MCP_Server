@@ -34,7 +34,11 @@ Once the build finishes and the variables are injected, Railway will start the s
 
 1.  Go to the **Settings** tab in Railway and click **Generate Domain** (if you haven't already).
 2.  Your MCP server is now running using SSE (Server-Sent Events) transport.
-3.  You can configure your remote LLM client to connect to your Railway URL. The SSE endpoint is typically located at `https://your-generated-domain.up.railway.app/sse`.
+3.  You can verify the server is running by visiting `https://your-generated-domain.up.railway.app/health` in your browser. It should return `{"status": "ok"}`.
+4.  You can configure your remote LLM client to connect to your Railway URL. The SSE endpoint is typically located at `https://your-generated-domain.up.railway.app/sse`.
+
+## How this compares to older REST APIs
+If you see other tutorials mentioning endpoints like `POST /append_to_doc` or `POST /create_email_draft`, note that this project uses a much more modern standard: **FastMCP**. Instead of exposing dozens of individual HTTP endpoints, FastMCP exposes a single, unified `/sse` connection. AI clients connect to this single endpoint and automatically discover all available tools. This means you do not need individual HTTP POST routes for your Google workspace tools!
 
 ---
 *Note: We modified `main.py` to automatically detect the Railway environment and switch from local `stdio` to remote `sse` transport on the designated `PORT`. We also updated `auth.py` to seamlessly read your Google authentication keys from the environment variables.*
