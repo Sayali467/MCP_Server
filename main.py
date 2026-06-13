@@ -3,9 +3,11 @@ from pydantic import Field
 
 import gmail_service
 import docs_service
+import os
 
 # Initialize FastMCP Server
-mcp = FastMCP("Google Workspace MCP Server")
+port = int(os.environ.get("PORT", 8000))
+mcp = FastMCP("Google Workspace MCP Server", host="0.0.0.0", port=port)
 
 # --- Gmail Tools ---
 
@@ -68,11 +70,9 @@ def create_document(title: str, initial_content: str = "") -> dict:
     return docs_service.create_document(title, content)
 
 if __name__ == "__main__":
-    import os
-    port = int(os.environ.get("PORT", 8000))
     if "RAILWAY_ENVIRONMENT" in os.environ or os.environ.get("TRANSPORT") == "sse":
         print(f"Starting server with SSE transport on port {port}")
-        mcp.run(transport="sse", host="0.0.0.0", port=port)
+        mcp.run(transport="sse")
     else:
         # The default execution when run normally. 
         # Usually you'd run `mcp dev main.py` or use the standard startup method if integrating differently.
